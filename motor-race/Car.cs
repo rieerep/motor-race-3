@@ -25,6 +25,7 @@ namespace motor_race
             this.name = name;
             this.distanceTraveled = distanceTraveled;
             this.speed = speed;
+            this.time = time;
         }
 
     }
