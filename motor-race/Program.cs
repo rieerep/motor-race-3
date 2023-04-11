@@ -82,15 +82,15 @@ namespace motor_race
 			//double timeremaining;
 			//double distanceRemaining;
 
-			decimal timeremaining = (raceDistance - car.distanceTraveled);
+			// decimal timeremaining = (raceDistance - car.distanceTraveled);
 			//
 
 			
 
-			if (car.distanceTraveled < intervalTick)
-			{
-				await Wait(timeremaining)
-			};
+			//if (car.distanceTraveled < intervalTick)
+			//{
+			//	await Wait(timeremaining)
+			//};
 
 			while (true)
 			{
