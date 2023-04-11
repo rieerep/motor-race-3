@@ -10,16 +10,19 @@ namespace motor_race
 	{
         public int carId { get; set; }
         public string name { get; set; }
+        // DistanceTraveled is measuered in meters
         public decimal distanceTraveled { get; set; } = 0;
-        public decimal time { get; set; }
-        public int speed { get; set; } = 120;
 
-        public int MetersPerSec()
+        // Time is measured in seconds
+        public decimal time { get; set; }
+        public decimal speed { get; set; } = 33.33M;
+
+        public decimal KilometersPerHour()
         {
-            return this.speed / 3600;
+            return this.speed * 3.6M;
         }
 
-        public Car(int carId, string name, decimal distanceTraveled, decimal time, int speed)
+        public Car(int carId, string name, decimal distanceTraveled, decimal time)
         {
             this.carId = carId;
             this.name = name;
