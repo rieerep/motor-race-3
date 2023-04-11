@@ -78,17 +78,19 @@ namespace motor_race
 			// Om timeremaining är mindre än 30 - await time remaining istället för 30
 			
 			int intervalTick = 30;
-			double raceDistance = 10000;
+			int raceDistance = 10000;
+			//double timeremaining;
+			//double distanceRemaining;
+
+			decimal timeremaining = (raceDistance - car.distanceTraveled);
+			//
 
 			
-			// double distanceRemaining = raceDistance - car.distanceTraveled;
-			// double timeremaining = distanceRemaining / car.speed;
-			// Console.WriteLine(timeremaining);
 
-			if (timeremaining < intervalTick)
+			if (car.distanceTraveled < intervalTick)
 			{
 				await Wait(timeremaining)
-			}
+			};
 
 			while (true)
 			{
