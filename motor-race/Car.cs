@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,8 +22,12 @@ namespace motor_race
         {
             return this.speed * 3.6M;
         }
+		public decimal TimeRemaining(decimal raceDistance)
+		{
+			return (raceDistance - distanceTraveled) / speed;
+		}
 
-        public Car(int carId, string name, decimal distanceTraveled, decimal time)
+		public Car(int carId, string name, decimal distanceTraveled, decimal time)
         {
             this.carId = carId;
             this.name = name;

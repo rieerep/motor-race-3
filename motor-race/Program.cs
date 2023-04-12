@@ -29,13 +29,18 @@ namespace motor_race
             // Instansierar två bilobjekt av klassen Car
             Car carOne = new Car(1, "Mazda Autozam", 0, 0);
 			Car carTwo = new Car(2, "Land Cruiser", 0, 0);
+			Car carThree = new Car(3, "McLaren F1", 0, 0);
+			Car carFour = new Car(4, "Volvo 740 Turbo", 0, 0);
 
-			// Varje bilobjekt ska köras i en egen tråd
 
+
+			// Varje bilobjekt  körs i en egen tråd
 			var carOneTask = Race(carOne);
 			var carTwoTask = Race(carTwo);
-			var statusTask = RaceStatus(new List<Car> { carOne, carTwo });
-			var carRaces = new List<Task> { carOneTask, carTwoTask, statusTask };
+			var carThreeTask = Race(carThree);
+			var carFourTask = Race(carFour);
+			var statusTask = RaceStatus(new List<Car> { carOne, carTwo, carThree, carFour });
+			var carRaces = new List<Task> { carOneTask, carTwoTask, carThreeTask, carFourTask, statusTask, };
             bool raceHasWinner = false;
             while (carRaces.Count > 0)
             {
@@ -46,7 +51,10 @@ namespace motor_race
 					if (!raceHasWinner)
 					{
 						raceHasWinner = true;
+						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("Mazda finished first");
+						Console.ForegroundColor = ConsoleColor.White;
+
 					}
 					else
 						Console.WriteLine("Mazda finished");
@@ -57,19 +65,43 @@ namespace motor_race
 					if (!raceHasWinner)
 					{
 						raceHasWinner = true;
+						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("Land Cruiser finished first");
+						Console.ForegroundColor = ConsoleColor.White;
+
 					}
 					else
 						Console.WriteLine("Land Cruiser finished");
 				}
+				else if (finishedTask == carThreeTask)
+				{
+					if (!raceHasWinner)
+					{
+						raceHasWinner = true;
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.WriteLine("McLaren F1 finished first");
+						Console.ForegroundColor = ConsoleColor.White;
 
-                await finishedTask;
+					}
+					else
+						Console.WriteLine("McLaren F1 finished");
+				}
+				else if (finishedTask == carFourTask)
+				{
+					if (!raceHasWinner)
+					{
+						raceHasWinner = true;
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.WriteLine("Volvo 740 Turbo finished first");
+						Console.ForegroundColor = ConsoleColor.White;
+					}
+					else
+						Console.WriteLine("Volvo 740 Turbo finished");
+				}
+
+				await finishedTask;
                 carRaces.Remove(finishedTask);
             }
-
-
-            //Console.WriteLine(carRaceOne);
-
         }
 
 		public async static Task<Car> Race(Car car)
@@ -77,44 +109,34 @@ namespace motor_race
 
 			// Om timeremaining är mindre än 30 - await time remaining istället för 30
 			
-			int intervalTick = 30;
+
+			decimal intervalTick = 30;
 			int raceDistance = 10000;
-			//double timeremaining;
-			//double distanceRemaining;
-
-			// decimal timeremaining = (raceDistance - car.distanceTraveled);
-			//
-
-			
-
-			//if (car.distanceTraveled < intervalTick)
-			//{
-			//	await Wait(timeremaining)
-			//};
+			int eventDelay = 0;
 
 			while (true)
 			{
+				decimal timeRemaining = car.TimeRemaining(raceDistance);
 				
-				await Wait(intervalTick);
-				int eventDelay = await RandomEvents(car);
-
-				//if (rInt < 48)
-				//{
-				//	Console.WriteLine("Motorfel!");
-				//	car.speed--;
-				//}
-				decimal speed = car.speed;
-				var distanceTraveled = speed * intervalTick;
-				//var timeTraveled = intervalTick;
-				// car.distanceTraveled += ((speed / 3600) * tick);
-				car.distanceTraveled += distanceTraveled;
-				car.time += intervalTick + eventDelay;
-                
-				// Console.WriteLine(raceStatusTask); // Hur skickar jag in raceStatusTask i metoden 'Race'?
+				// Detect if car has less than 30 seconds to finish the race
+				if (timeRemaining < intervalTick)
+				{
+					Console.WriteLine($"Sekunder till mål:{car.name}{Math.Round(timeRemaining), 3}");
+					// await Wait((double)timeRemaining);
+					await Wait((double)timeRemaining);
+					car.distanceTraveled += car.speed * timeRemaining;
+					car.time += timeRemaining + eventDelay;
+				}
+				else
+				{
+					await Wait((double)intervalTick);
+					eventDelay = await RandomEvents(car);
+					car.distanceTraveled += car.speed * intervalTick;
+					car.time += intervalTick + eventDelay;
+				}
 
 				if (car.distanceTraveled >= raceDistance)
 				{
-					// Console.WriteLine("You reached the finish line");
 					return car;
 				}
 			}
@@ -122,10 +144,6 @@ namespace motor_race
 		private static async Task Wait(double delay = 1)
 		{
 			await Task.Delay(TimeSpan.FromSeconds(delay / 10));
-
-			// Lägga in slumpgenererad händelse här?
-			// Tärningsmodell - händelse baserad på vad man slår
-			//Console.WriteLine("30 seconds passed");
 		}
 		public async static Task RaceStatus(List<Car> cars)
 		{
@@ -150,21 +168,28 @@ namespace motor_race
                     Console.ReadKey();
                     cars.ForEach(car =>
                     {
-                        Console.WriteLine($"Bil: {car.name} Körd sträcka: {Math.Round(car.distanceTraveled, 2)} meter Hastighet: {Math.Round(car.KilometersPerHour())} km/h Tid:{car.time} sekunder");
-                        // console.writeline($"{car.name} has reached {car.distancetraveled} and has been driving for {car.time} seconds");
-                    });
+						Console.ForegroundColor = ConsoleColor.DarkYellow;
+						Console.WriteLine($"Bil: {car.name} Körd sträcka: {Math.Round(car.distanceTraveled, 2)} meter Hastighet: {Math.Round(car.KilometersPerHour())} km/h Tid:{car.time} sekunder");
+						// console.writeline($"{car.name} has reached {car.distancetraveled} and has been driving for {car.time} seconds");
+						Console.ForegroundColor = ConsoleColor.White;
+
+					});
 					gotKey = false;
                 }
 
-                await Task.Delay(1);
+                await Task.Delay(1); 
 
 				var finishedCars = cars.Where(car => car.distanceTraveled >= 10000).Count();
 				if (finishedCars == cars.Count())
 				{
 					Console.WriteLine("Race over");
+					cars.OrderBy(car => car.time).ToList().ForEach(car =>
+					{
+						Console.WriteLine($"Bil: {car.name} Körd sträcka: {Math.Round(car.distanceTraveled, 2)} meter Hastighet: {Math.Round(car.KilometersPerHour())} km/h Tid:{Math.Round(car.time), 3} sekunder");
+						// console.writeline($"{car.name} has reached {car.distancetraveled} and has been driving for {car.time} seconds");
+					});
 					return;
 				}
-				//var distanceRemaining = 0;
 			}
             
         }
